@@ -25,7 +25,17 @@
         display: flex;
         margin-top: 0;
     }
-
+    /* .round {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .round-btn {
+        background-color: #f3b007;
+        font-weight: 200;
+        radius: 100px;
+        border: none;   
+    } */
     .home-content .title-base h2 {
         line-height: 35px;
         margin: 0 0 10px 0;
@@ -55,6 +65,103 @@
     .container img {
         border: 4px solid white;
     }
+.round {
+    position: fixed; /* Use fixed to position relative to the viewport */
+    bottom: 20px;   /* Distance from the bottom of the page */
+    right: 20px;    /* Distance from the right of the page */
+    z-index: 1000;  /* Ensure it stays above other content */
+}
+
+.round-btn {
+    background-color: #f3b007;
+    font-weight: bold;
+    border-radius: 100px;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the '?' inside the button */
+}   
+    /* Modal Overlay */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh; /* Use viewport height to constrain modal to screen */
+        background-color: rgba(0,0,0,0.5);
+        overflow: hidden; /* Prevent scrollbar by disabling overflow */
+    }
+
+    /* Modal Box */
+    .modal-content {
+        background-color: #fff3cd;
+        margin: 10% auto;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 410px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        max-height: 82vh; /* Limit modal content height to 80% of viewport */
+        overflow-y: auto; /* Allow scrolling within modal if content overflows */
+    }
+
+    /* Modal Title */
+    .modal-content h3 {
+        margin-bottom: 20px;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    /* Button Group */
+    .button-group {
+        display: flex;
+        flex-wrap: wrap; /* Allow buttons to wrap if needed */
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+    }
+    .btn span {
+        font-size: 18px;
+    }
+
+    /* Button Colors */
+    .btn.blue { background-color: #007bff; }
+    .btn.yellow { background-color: #ffc107; color: #000; }
+    .btn.green { background-color: #28a745; }
+    .btn.red { background-color: #dc3545; }
+
+    /* Close Button (top-right X) */
+    .close-btn {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
 </style>
 
 
@@ -66,6 +173,9 @@
                 class="carousel-logo" />
         </div>
     </div>
+    <?php
+    // echo"<pre>";print_r($_SESSION);exit;
+    ?>
     <div class="container content mt-5">
         <div class="home-content">
             <div class="row">
@@ -105,6 +215,9 @@
                     <div class="title-base title-left">
                         <hr />
                         <h2>Information about Dawoodi Bohras</h2>
+                        <div class="round">
+                            <button class="round-btn" onclick="openPopup()">?</button>
+                        </div>
                     </div>
                     <div class="list-items">
                         <div class="list-item">
@@ -179,5 +292,47 @@
             </div>
         </div>
     </div>
+    <!-- Modal Popup -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h3>👋 What would you like to do today?</h3>
+            <div class="button-group">
+                <a href="<?= base_url('accounts/Umoor') ?>" class="btn btn-primary m-2">📅 Request Raza</a>
+                <a href="<?= base_url('accounts/thaali') ?>" class="btn btn-secondary m-2">🥣 Thaali Signup</a>
+                <a href="<?= base_url('accounts/fmb') ?>" class="btn btn-warning m-2">🍽️ FMB / Sabeel Tracking</a>
+                <a href="<?= base_url('accounts/Rsvpnew') ?>" class="btn btn-success m-2">🔔 RSVP</a>
+                <?php    
+                    if (empty($_SESSION['user'])) {
+                        ?>
+                    <a href="<?= base_url('/accounts') ?>" style="padding-right: 24px;" class="btn btn-info m-2">👤 Login</a>
 
+                    <?php    
+                    }
+                ?>
+                <button class="btn btn-danger m-2" style="padding-right: 24px;" onclick="closePopup()"><span>❌</span> Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+setTimeout(function() {
+    document.getElementById('infoModal').style.display = 'block';
+}, 6000); // 6 seconds
+function openPopup() {
+    document.getElementById('infoModal').style.display = 'block';
+}
+
+function closePopup() {
+    document.getElementById('infoModal').style.display = 'none';
+}
+
+// Optional: Close modal if user clicks outside the modal content
+window.onclick = function(event) {
+    const modal = document.getElementById('infoModal');
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+</script>

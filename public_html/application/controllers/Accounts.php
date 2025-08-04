@@ -112,6 +112,54 @@ class Accounts extends CI_Controller
         $this->load->view('Accounts/Header', $data);
         $this->load->view('Accounts/MyRaza/Home', $data);
     }
+    public function Rsvpnew()
+    {
+        if (empty($_SESSION['user'])) {
+            redirect('/accounts');
+        }
+
+        // Load the model
+        $this->load->model('AccountM');
+
+        // Get the data from model
+        $data['raza_types'] = $this->AccountM->RazaTypesDetails();
+        $data['user_name'] = $_SESSION['user']['username'];
+
+        $this->load->view('Accounts/Header', $data);
+        $this->load->view('Accounts/Rsvp/Home', $data);
+    }
+    public function thaali()
+    {
+        if (empty($_SESSION['user'])) {
+            redirect('/accounts');
+        }
+
+        // Load the model
+        $this->load->model('AccountM');
+
+        // Get the data from model
+        $data['raza_types'] = $this->AccountM->RazaTypesDetails();
+        $data['user_name'] = $_SESSION['user']['username'];
+
+        $this->load->view('Accounts/Header', $data);
+        $this->load->view('Accounts/thaali', $data);
+    }
+    public function fmb()
+    {
+        if (empty($_SESSION['user'])) {
+            redirect('/accounts');
+        }
+
+        // Load the model
+        $this->load->model('AccountM');
+
+        // Get the data from model
+        $data['raza_types'] = $this->AccountM->RazaTypesDetails();
+        $data['user_name'] = $_SESSION['user']['username'];
+
+        $this->load->view('Accounts/Header', $data);
+        $this->load->view('Accounts/fmb', $data);
+    }
     public function Umoor()
     {
         if (empty($_SESSION['user'])) {
