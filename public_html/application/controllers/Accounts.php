@@ -28,6 +28,7 @@ class Accounts extends CI_Controller
     }
     public function login()
     {
+        // echo "<pre>"; print_r($_SESSION); exit;
         if (!empty($_SESSION['user'])) {
             redirect('/accounts');
         }
@@ -45,19 +46,44 @@ class Accounts extends CI_Controller
             }
             // echo print_r($check);
             // die();
-            if ($check[0]['role'] == 1) {
-                redirect('/admin');
-            } elseif ($check[0]['role'] == 2) {
-                redirect('/amilsaheb');
-            } elseif ($check[0]['role'] == 3) {
-                redirect('/anjuman');
-            } elseif ($check[0]['role'] == 16) {
-                redirect('/MasoolMusaid');
-            } elseif ($check[0]['role'] >= 4 && $check[0]['role'] <= 15) {
-                redirect('/Umoor');
+            if (isset($_SESSION['redirect_after_login']) && !empty($_SESSION['redirect_after_login'])) {
+                if ($_SESSION['redirect_after_login'] == 'raza') {
+                    unset($_SESSION['redirect_after_login']);
+                    redirect('/accounts/NewRaza');
+                } elseif ($_SESSION['redirect_after_login'] == 'rsvpnew') {
+                    unset($_SESSION['redirect_after_login']);
+                    redirect('/accounts/Rsvpnew');
+                } elseif ($_SESSION['redirect_after_login'] == 'thaali') {
+                    unset($_SESSION['redirect_after_login']);
+                    redirect('/accounts/thaali');
+                } elseif ($_SESSION['redirect_after_login'] == 'fmb') {
+                    unset($_SESSION['redirect_after_login']);
+                    redirect('/accounts/Fmb');
+                } elseif ($_SESSION['redirect_after_login'] == 'umoor') {
+                    unset($_SESSION['redirect_after_login']);
+                    redirect('/accounts/Umoor');
+                } else {
+                    redirect('/accounts/home');
+                }
+                
             } else {
-                redirect('/accounts/home');
+                if ($check[0]['role'] == 1) {
+                    redirect('/admin');
+                } elseif ($check[0]['role'] == 2) {
+                    redirect('/amilsaheb');
+                } elseif ($check[0]['role'] == 3) {
+                    redirect('/anjuman');
+                } elseif ($check[0]['role'] == 16) {
+                    redirect('/MasoolMusaid');
+                } elseif ($check[0]['role'] >= 4 && $check[0]['role'] <= 15) {
+                    redirect('/Umoor');
+                } else {
+                    redirect('/accounts/home');
+                }
+                
             }
+            
+            
 
         } else {
             $_SESSION['login_status'] = true;
@@ -115,6 +141,7 @@ class Accounts extends CI_Controller
     public function Rsvpnew()
     {
         if (empty($_SESSION['user'])) {
+            $_SESSION['redirect_after_login'] = 'rsvpnew';
             redirect('/accounts');
         }
 
@@ -131,6 +158,7 @@ class Accounts extends CI_Controller
     public function thaali()
     {
         if (empty($_SESSION['user'])) {
+            $_SESSION['redirect_after_login'] = 'thaali';
             redirect('/accounts');
         }
 
@@ -147,6 +175,7 @@ class Accounts extends CI_Controller
     public function fmb()
     {
         if (empty($_SESSION['user'])) {
+            $_SESSION['redirect_after_login'] = 'fmb';
             redirect('/accounts');
         }
 
@@ -163,6 +192,7 @@ class Accounts extends CI_Controller
     public function Umoor()
     {
         if (empty($_SESSION['user'])) {
+            $_SESSION['redirect_after_login'] = 'umoor';
             redirect('/accounts');
         }
 
@@ -179,6 +209,7 @@ class Accounts extends CI_Controller
     public function NewRaza()
     {
         if (empty($_SESSION['user'])) {
+            $_SESSION['redirect_after_login'] = 'newraza';
             redirect('/accounts');
         }
         $data['razatype'] = $this->AccountM->get_razatype();

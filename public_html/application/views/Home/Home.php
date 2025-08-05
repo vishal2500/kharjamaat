@@ -128,20 +128,6 @@
         gap: 10px;
     }
 
-    /* Buttons */
-    .btn {
-        padding: 10px 16px;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        justify-content: center;
-    }
     .btn span {
         font-size: 18px;
     }
