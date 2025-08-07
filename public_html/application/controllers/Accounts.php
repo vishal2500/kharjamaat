@@ -707,7 +707,9 @@ class Accounts extends CI_Controller
     {
         $date = $this->input->get('date');
         $data['user_name'] = $_SESSION['user']['username'];
-
+            // echo'<pre>';
+            // print_r($_SESSION);
+            // exit; 
         $data['time_slots'] = $this->AccountM->get_available_time_slots($date);
 
         $data['date'] = $date;
@@ -718,29 +720,62 @@ class Accounts extends CI_Controller
 
     public function book_slot()
     {
-        // Retrieve data from the URL parameters
         $slot_id = $this->input->get('slot_id');
         $time = $this->input->get('time');
-
-        // Retrieve user_id from the session
         $user_id = $_SESSION['user']['username'];
 
-        // Load the model
-
-        // Retrieve ITS_ID and Full_Name from the user table based on user_id
         $user_info = $this->AccountM->get_user_info($user_id);
 
         if ($user_info) {
-            // Store the appointment in the appointments table
+            // Book the slot
             $this->AccountM->book_slot($slot_id, $user_info->ITS_ID, $user_info->Full_Name);
 
-            // Add any additional logic or redirects as needed
-            redirect('accounts/appointment');
+            // Load Email Library
+            $this->load->library('email');
+
+            // Email configuration (You can move this to config/email.php if preferred)
+            $config['protocol'] = 'smtp';
+            $config['smtp_host'] = 'smtp.gmail.com'; // e.g., smtp.gmail.com
+            $config['smtp_port'] = 587; // or 465 for SSL
+            $config['smtp_crypto'] = 'tls';
+            $config['smtp_user'] = 'khelprreg2022@gmail.com';
+            $config['smtp_pass'] = 'vusnizqsprszbiqp';
+            $config['mailtype'] = 'html';
+            $config['charset']  = 'utf-8';
+            $config['newline']  = "\r\n";
+            $this->email->initialize($config);
+
+            // Set email parameters
+            $this->email->from('vishaldharm250@gmail.com', 'App Name');
+            $this->email->to('vishaldharm250@gmail.com');
+            // $this->email->to($user_info->Email);
+            $this->email->subject('Appointment Slot Booked');
+            $this->email->message("
+                Dear {$user_info->Full_Name},<br><br>
+                Your appointment has been successfully booked.<br>
+                <strong>Slot ID:</strong> {$slot_id}<br>
+                <strong>Time:</strong> {$time}<br><br>
+                Thank you!
+            ");
+
+            // Send email
+            if (!$this->email->send()) {
+                echo "<pre>";
+                print_r($this->email->print_debugger(['headers']));
+                echo "</pre>";
+                exit;
+            } else {
+                echo "Email sent successfully!";
+            }
+
+
+            // Redirect
+            // redirect('accounts/appointment');
         } else {
-            // Handle the case where user info is not found
             echo 'User information not found.';
         }
     }
+
     public function delete_appointment($appointment_id)
     {
         // Load the model

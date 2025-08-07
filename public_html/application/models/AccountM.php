@@ -453,7 +453,7 @@ class AccountM extends CI_Model
     public function get_user_info($user_id)
     {
         // Retrieve ITS_ID and Full_Name from the user table based on user_id
-        $this->db->select('ITS_ID, Full_Name');
+        $this->db->select('ITS_ID, Full_Name, Email');
         $this->db->where('ITS_ID', $user_id); // Assuming 'user_id' is the column in the 'user' table
         $query = $this->db->get('user');
 
