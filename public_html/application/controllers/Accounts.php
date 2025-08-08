@@ -746,8 +746,8 @@ class Accounts extends CI_Controller
             $this->email->initialize($config);
 
             // Set email parameters
-            $this->email->from('vishaldharm250@gmail.com', 'App Name');
-            $this->email->to('vishaldharm250@gmail.com');
+            $this->email->from('patelinfotechservices@gmail.com', 'App Name');
+            $this->email->to('patelinfotechservices@gmail.com');
             // $this->email->to($user_info->Email);
             $this->email->subject('Appointment Slot Booked');
             $this->email->message("
@@ -764,13 +764,11 @@ class Accounts extends CI_Controller
                 print_r($this->email->print_debugger(['headers']));
                 echo "</pre>";
                 exit;
-            } else {
-                echo "Email sent successfully!";
             }
 
 
             // Redirect
-            // redirect('accounts/appointment');
+            redirect('accounts/appointment');
         } else {
             echo 'User information not found.';
         }
