@@ -453,7 +453,7 @@ class AccountM extends CI_Model
     public function get_user_info($user_id)
     {
         // Retrieve ITS_ID and Full_Name from the user table based on user_id
-        $this->db->select('ITS_ID, Full_Name, Email');
+        $this->db->select('ITS_ID, Full_Name, Email, First_Name');
         $this->db->where('ITS_ID', $user_id); // Assuming 'user_id' is the column in the 'user' table
         $query = $this->db->get('user');
 
@@ -480,6 +480,33 @@ class AccountM extends CI_Model
         $this->db->update('slots', $slot_update_data);
     }
 
+    public function amilsahebemail()
+    {
+        // Assuming you have a 'slots' table and an 'appointments' table
+        $this->db->select('login.hof, user.Email');
+        $this->db->from('login');
+        $this->db->join('user', 'user.ITS_ID = login.hof', 'left'); // LEFT JOIN
+        $this->db->where('login.role', 2);
+        $this->db->where('login.active', 1);
+        $query = $this->db->get();
+
+        $result = $query->row(); // Get first row
+        return $result->Email ?? "No Amilsaheb email found.";
+
+    }
+
+    public function slotdate($slot_id)
+    {
+        // Assuming you have a 'slots' table and an 'appointments' table
+        $this->db->select('slots.date');
+        $this->db->from('slots');
+        $this->db->where('slots.slot_id', $slot_id);
+        $query = $this->db->get();
+
+        $result = $query->row(); // Get first row
+        return $result->date ?? "No Date found.";
+
+    }
     public function get_user_appointments($user_name)
     {
         // Assuming you have a 'slots' table and an 'appointments' table

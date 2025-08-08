@@ -723,13 +723,19 @@ class Accounts extends CI_Controller
         $slot_id = $this->input->get('slot_id');
         $time = $this->input->get('time');
         $user_id = $_SESSION['user']['username'];
+        // $username = $_SESSION['user']['First_Name'];
 
         $user_info = $this->AccountM->get_user_info($user_id);
 
         if ($user_info) {
             // Book the slot
             $this->AccountM->book_slot($slot_id, $user_info->ITS_ID, $user_info->Full_Name);
-
+            $amil_email = $this->AccountM->amilsahebemail();
+            $slot_date = $this->AccountM->slotdate($slot_id);
+                // echo "<pre>";
+                // print_r($slot_date);
+                // echo "</pre>";
+                // exit;
             // Load Email Library
             $this->load->library('email');
 
@@ -746,17 +752,38 @@ class Accounts extends CI_Controller
             $this->email->initialize($config);
 
             // Set email parameters
-            $this->email->from('patelinfotechservices@gmail.com', 'App Name');
-            $this->email->to('patelinfotechservices@gmail.com');
-            // $this->email->to($user_info->Email);
-            $this->email->subject('Appointment Slot Booked');
-            $this->email->message("
-                Dear {$user_info->Full_Name},<br><br>
-                Your appointment has been successfully booked.<br>
-                <strong>Slot ID:</strong> {$slot_id}<br>
+            // Validate recipient emails
+            $recipients = [];
+            if (filter_var($user_info->Email, FILTER_VALIDATE_EMAIL)) {
+                $recipients[] = $user_info->Email;
+            }
+            if (!empty($amil_email) && filter_var($amil_email, FILTER_VALIDATE_EMAIL)) {
+                $recipients[] = $amil_email;
+            }
+
+            if (empty($recipients)) {
+                return "No valid recipient emails found.";
+            }
+
+            // Send email
+            $this->email->from('vishaldharm250@gmail.com', 'Appointment Booking System');
+            // $this->email->to($recipients); // Can be array or comma-separated string
+            $this->email->to('vishaldharm250@gmail.com'); // Can be array or comma-separated string
+            $this->email->subject('Your Appointment Confirmation');
+
+            // Nicer message
+            $message = "
+                Dear {$user_info->First_Name},<br><br>
+                We are pleased to inform you that your appointment has been successfully booked.<br><br>
+                <strong>Date:</strong> {$slot_date}<br>
                 <strong>Time:</strong> {$time}<br><br>
-                Thank you!
-            ");
+                Thank you for choosing our services. We look forward to serving you.<br><br>
+                Best regards,<br>
+                Appointment Booking Team
+            ";
+
+            $this->email->message($message);
+
 
             // Send email
             if (!$this->email->send()) {
